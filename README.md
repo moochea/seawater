@@ -12,7 +12,11 @@ To run/develop  this application, the hosting environment must have a minimum of
 Please see the README file in the front_end folder
 
 # To run this application:
-Note: These instructions assume the deployment environment is able to run shell scripts.
+Notes: 
+* The setup_venv.sh and start_app.sh scripts were written for a Linux environment.
+* python3 is the interpreter command used in the shell scripts. This may need to be changed depending on how the python interpreter is called on the system
+** it may be necessary to run the start_app.sh and setup_venv.sh scripts through dos2linux to fix the line endings
+
 1. Build the Front-end components as per the README.md instructions in the front_end folder.
 2. In the backend folder,  archive/zip the following files and folders
    1. blueprints
