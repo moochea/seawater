@@ -1,0 +1,33 @@
+front_end/DS_Store
+front_end/node_modules
+/dist
+
+
+# local env files
+front_end/env.local
+front_end/env.*.local
+
+# Log files
+front_end/*.log*
+
+# Editor directories and files
+front_end/.idea
+front_end/.vscode
+front_end/*.suo
+front_end/*.ntvs*
+front_end/*.njsproj
+front_end/*.sln
+front_end/*.sw?
+
+back_end/dist/*
+back_end/__pycache__/*
+back_end/.idea/*
+.idea/*
+
+back_end/venv/*
+back_end/api/__pycache__/*
+back_end/models/__pycache__/*
+back_end/blueprints/__pycache__/*
+back_end/infrastructure/__pycache__/*
+back_end/logs/*.log
+back_end/*.zip
