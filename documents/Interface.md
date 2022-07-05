@@ -1,12 +1,14 @@
 # Inteface Summary 
 
- ## Back End iServer
+ ## Back End Server
  Base url: (host ip):80/api/dataAccess
+
  Description: REST API for the front end application to access
 
 
 ### GET /records/**(key)**/**(data_ref)**
 Description: Tabulated data from the selected data source
+
 Resources:
 * key - a supported data source 
 * data_ref - type/structure/class of data / information requested
@@ -58,6 +60,7 @@ units:
 
 ```
 source: "./data/58220.csv"
+
 totalRecords: 25476
 
 
@@ -103,7 +106,9 @@ units:
 ```
 ## GSW Service
  Base url: http://localhost:9998/api/calculations
+
  Description: standalone internal service to carry out specialised calculations with the use of the GSW (Gibbs SeaWater  Oceanographic Toolbox of TEOS-10) software package
+
 
 
 #### Parameter structure examples:
@@ -129,13 +134,13 @@ data:
 ### GET /
 Description:
     Present mainly as a check that the service is running. 
+
 Returns:
     "hello world", status code 200 if the service is running.
 
 
 ### POST /practical_salinity
 Body:
-e.g.
 ```
 [ 
      {
