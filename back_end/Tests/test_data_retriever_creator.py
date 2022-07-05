@@ -5,12 +5,19 @@ import pytest
 from Models.data_retriever_base import DataRetrieverBase
 from Models.data_retriever_creator import DataRetrieverCreator
 from Models.dataset import Dataset
+from Tests import helper
 
 
 class TestDataRetrieverCreator:
     @pytest.fixture
-    def creator(self):
-        creator = DataRetrieverCreator()
+    @mock.patch('Models.emso_data_retriever.EMSODataRetriever.load_data')
+    @mock.patch("logging.getLogger")
+    def creator(self, logger, load_data):
+        def return_dataset(args):
+            return helper.generate_seawater_dataset()
+        logger = Mock()
+        load_data = return_dataset
+        creator = DataRetrieverCreator(logger)
         return creator
 
     def test_EMSO_key_exists(self, creator):

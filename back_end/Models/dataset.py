@@ -35,3 +35,9 @@ class Dataset:
     def data(self):
         return self._dataframe.to_dict('records')
 
+    def updated_dataframe(self, new_dataframe):
+        return Dataset(dataFrame=new_dataframe,
+                       sensor_info=self._sensor_info,
+                       units=self._units,
+                       source=self._source)
+

@@ -31,3 +31,6 @@ back_end/blueprints/__pycache__/*
 back_end/infrastructure/__pycache__/*
 back_end/logs/*.log
 back_end/*.zip
+
+gsw_service/.idea/*
+gsw_service/venv/*

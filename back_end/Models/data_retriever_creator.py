@@ -3,8 +3,8 @@ import logging
 
 
 class DataRetrieverCreator:
-    def __init__(self):
-        self.logger = logging.getLogger("data retrieval")
+    def __init__(self, logger):
+        self.logger = logger
         self._retrievers = {
             "EMSO": EMSODataRetriever(self.logger)
         }

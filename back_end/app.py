@@ -1,6 +1,9 @@
+import logging
+
 from flask import Flask, render_template
 from flask_cors import CORS
 
+from Models.calculate_service import CalculateService
 from Models.data_retriever_creator import DataRetrieverCreator
 from blueprints import dataAccess_bp
 from infrastructure.logger import CommonLogging
@@ -19,8 +22,9 @@ def run_server():
                 )
 
     # CORS(app)
-    dataset_retriever_creator = DataRetrieverCreator()
-    data_access_bp = dataAccess_bp.construct(dataset_retriever_creator)
+    dataset_retriever_creator = DataRetrieverCreator(logger=logging.getLogger("DataRetriever"))
+    calculations_service = CalculateService(logger=logging.getLogger('CalculationService'))
+    data_access_bp = dataAccess_bp.construct(dataset_retriever_creator, calculations_service)
     app.register_blueprint(data_access_bp)
     app.config.update()
 

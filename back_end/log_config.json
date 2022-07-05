@@ -2,7 +2,7 @@
   "folder": "./logs",
   "file_name": "log",
   "append_date": "True",
-  "date_format": "%Y-%m-%d %H-%M-%S",
+  "date_format": "%Y-%m-%d %H-%M",
   "log_format": "%(asctime)s %(name)s %(levelname)s - %(message)s",
   "log_level": "info"
 }

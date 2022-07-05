@@ -1,17 +1,27 @@
 import math
+from unittest import mock
+from unittest.mock import Mock
 
+import pytest
+
+from Models.dataset import Dataset
 from Models.emso_data_retriever import EMSODataRetriever
 from Tests import helper
 
 
 class TestEMSORetriever:
 
-    def test_salinity_calc(self):
-        allowable_difference_percent = 5.0
-        dataset = helper.generate_seawater_dataset()
-        new_dataframe = EMSODataRetriever.add_psalinity_column(dataset._dataframe)
-        pSalinity = new_dataframe['pSalinity'].tolist()
-        assert all(item is not None for item in pSalinity)
-        percent_diff = new_dataframe.apply(lambda row: (math.fabs(float(row['salinity'])-float(row['pSalinity']))*100/float(row['salinity'])), axis=1).tolist()
-        assert all(value is not None and value < allowable_difference_percent for value in percent_diff)
+    @pytest.fixture
+    @mock.patch('Models.emso_data_retriever.EMSODataRetriever.load_data')
+    def retriever(self,load_data):
+        load_data.side_effect = [helper.generate_seawater_dataset()]
+        logger = Mock()
+        logger.info=print
+        dr = EMSODataRetriever(logger)
+        return dr
+
+    def test_get_records_with_salinity_cal_return_type(self, retriever):
+        records = retriever.get_records("58220")
+        assert isinstance(records, Dataset)
+
 

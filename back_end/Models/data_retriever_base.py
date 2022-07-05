@@ -7,7 +7,7 @@ class DataRetrieverBase(ABC):
     '''
 
     @abstractmethod
-    def get_records(self, reference, args_dict):
+    def get_records(self, reference, args_dict={}):
         '''
         Implement the API call to retrieve the various data components.
         Return an instance of the Dataset class.

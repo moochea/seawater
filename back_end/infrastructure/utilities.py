@@ -2,6 +2,8 @@ import json
 import os
 from datetime import datetime
 
+import pandas
+
 from infrastructure.LogConfiguration import LogConfiguration
 
 
@@ -24,3 +26,16 @@ class Utilities:
     @staticmethod
     def datetime_to_string(datetime_object: datetime):
         return datetime_object.astimezone().strftime("%m/%d/%Y, %H:%M:%S")
+
+    @staticmethod
+    def dict_list_to_dataframe(dict_list):
+        dict_of_lists = {}
+        for item in dict_list:
+            for key in item.keys():
+                if key not in dict_of_lists.keys():
+                    dict_of_lists[key] = []
+                dict_of_lists[key].append(item[key])
+        return pandas.DataFrame(dict_of_lists)
+
+
+

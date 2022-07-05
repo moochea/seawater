@@ -7,7 +7,6 @@ import pytest
 from flask import Flask
 
 from Models.data_retriever_creator import DataRetrieverCreator
-from Models.emso_data_retriever import EMSODataRetriever
 from Tests import helper
 from blueprints import dataAccess_bp
 
@@ -15,19 +14,19 @@ from blueprints import dataAccess_bp
 class TestEndpoints:
 
     @pytest.fixture
-    def client(self):
-        class NewClass(EMSODataRetriever):
-            def __init__(self):
-                super().__init__()
-
-            def api_call_to_get_data(self, reference, args_dict ):
-                return helper.generate_seawater_dataset()
-
+    @mock.patch('Models.emso_data_retriever.EMSODataRetriever.load_data')
+    def client(self, load_data):
+        def calculate(arg):
+            return [0,0,0,0,0,0,0]
+        load_data.return_value = helper.generate_seawater_dataset()
+        logger = Mock()
         app = Flask(__name__)
-        retriever = DataRetrieverCreator()
-
-        retriever._classes["EMSO"] = NewClass
-        blueprint = dataAccess_bp.construct(retriever)
+        retriever = DataRetrieverCreator(logger)
+        calculations_service = Mock()
+        calculations_service.presence_check.return_value = True
+        # calculations_service.calculate_psal = Mock()
+        calculations_service.calculate_psal = calculate
+        blueprint = dataAccess_bp.construct(retriever, calculations_service)
         app.register_blueprint(blueprint)
         app.config.update()
         return app.test_client()

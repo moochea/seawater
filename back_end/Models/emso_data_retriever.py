@@ -5,6 +5,7 @@ import numpy
 from Models.csv_dataset_extractor import CsvDataSetExtractor
 from Models.data_retriever_base import DataRetrieverBase
 from Models.dataset import Dataset
+from infrastructure.utilities import Utilities
 
 
 class EMSODataRetriever(DataRetrieverBase):
@@ -12,41 +13,27 @@ class EMSODataRetriever(DataRetrieverBase):
     def __init__(self, logger):
         self.logger = logger
         key = "58220"
-        self.datasets = {key: EMSODataRetriever.load_data(key)}
-        self.client = CalculateService(logger)
+        self.datasets = {key: EMSODataRetriever.load_data()}
         self.logger.info("EMSO data retriever created")
 
-    def get_records(self, reference: str, args_dict: dict):
+    def get_records(self, reference: str, args_dict={}):
         if reference in self.datasets.keys():
             dataset = self.datasets[reference]
-        if args_dict and args_dict.get("salinity_calculated", False):
-            dataset = self.calculated_salinity(dataset)
-        return dataset
+            return dataset
 
-    def calculated_salinity(self, dataset):
-        self.client.check_present()
-        self.logger.info("Present!")
-        return dataset 
+    # def calculated_salinity(self, dataset):
+    #     presence_check = self.client.check_present()
+    #     self.logger.info(f"gsw service operational: {presence_check}")
+    #     if presence_check:
+    #         psal_list = self.client.calculate_psal(dataset.data)
+    #         new_dataframe = Utilities.dict_list_to_dataframe(dataset.data)
+    #         new_dataframe['pSalinity'] = psal_list
+    #         return dataset.updated_dataframe(new_dataframe)
 
     @staticmethod
-    def load_data(reference):
+    def load_data():
         filepath = "./data/58220.csv"
         loader = CsvDataSetExtractor(filepath)
         sensor_info = loader.extract_sensor_info()
         data, units = loader.load_data()
         return Dataset(dataFrame=data, sensor_info=sensor_info, units=units, source=filepath)
-
-    @staticmethod
-    def add_psalinity_column(dataframe):
-        dataframe["pSalinity"] = dataframe.apply(lambda row: EMSODataRetriever.SP_from_C_with_Nan(
-            row.conductivity, row.temperature, row.pressure), axis=1)
-        return dataframe
-
-    @staticmethod
-    def SP_from_C_with_Nan(conductivity:str, temperature:str, pressure:str):
-        try:
-            value = gsw.SP_from_C(
-                float(conductivity)*10, float(temperature), float(pressure))
-            return numpy.around(value, 4)
-        except:
-            return None

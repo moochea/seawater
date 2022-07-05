@@ -4,38 +4,44 @@ import gsw as gsw
 import numpy
 import pandas as pandas
 from flask import Blueprint, request, jsonify, json
+# import flask_swagger_ui
 
 
 def construct():
-    calc_bp = Blueprint("calc", __name__, url_prefix="/api/calc")
+    calc_bp = Blueprint("calculations", __name__, url_prefix="/api/calculations")
 
     @calc_bp.route('/practical_salinity', methods=('POST',))
-    def calculate_psal():
+    def process_data():
         print("calculate_psal")
-        data = json.loads(request.data)
-        dataframe = convert_to_dataframe(data)
-        psal = return_psalinity_list(dataframe)
+        data=request.data
+        data = json.loads(data)
+        dataframe = extract_args_to_dataframe(data)
+        psal = calculate_psal(dataframe)
         response = jsonify(psal)
         response.status = HTTPStatus.OK
         return response
 
-    def convert_to_dataframe(data):
+    def extract_args_to_dataframe(list_of_dict):
         conductivity="conductivity"
         pressure="pressure"
         temperature="temperature"
         conductivity_values=[]
         temperature_values=[]
         pressure_values=[]
-        for item in data:
+        for item in list_of_dict:
             conductivity_values.append(item[conductivity])
             pressure_values.append(item[pressure])
             temperature_values.append(item[temperature])
-        return pandas.Dataframe({conductivity: conductivity_values, temperature: temperature_values, pressure: pressure_values })
+        return pandas.DataFrame(data={conductivity: conductivity_values, temperature: temperature_values, pressure: pressure_values })
 
-    def return_psalinity_list(dataframe):
-        dataframe["pSalinity"] = dataframe.apply(lambda row: SP_from_C_with_Nan(
+    def calculate_psal(dataframe):
+        '''
+        :param dataframe:
+        :return: list: list of float values
+        '''
+        pSalinity = dataframe.apply(lambda row: SP_from_C_with_Nan(
             row.conductivity, row.temperature, row.pressure), axis=1)
-        return dataframe
+        return pSalinity.tolist()
 
     def SP_from_C_with_Nan(conductivity: str, temperature: str, pressure: str):
         try:
