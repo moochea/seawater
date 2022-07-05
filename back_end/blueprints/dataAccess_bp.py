@@ -18,6 +18,7 @@ def construct(dataset_retriever_creator):
         return get_data(key, data_ref, salinity_calculated=True)
 
     def get_data(key, data_ref, salinity_calculated):
+        logger.info("get data")
         msg = "unknown error"
         response = jsonify(msg)
         response.status = HTTPStatus.BAD_REQUEST

@@ -1,18 +1,21 @@
 from Models.emso_data_retriever import EMSODataRetriever
+import logging
 
 
 class DataRetrieverCreator:
     def __init__(self):
-        self._classes = {
-            "EMSO": EMSODataRetriever
+        self.logger = logging.getLogger("data retrieval")
+        self._retrievers = {
+            "EMSO": EMSODataRetriever(self.logger)
         }
+        self.logger.info("retriever creator done")
 
     @property
     def keys(self):
-        return self._classes.keys()
+        return self._retrievers.keys()
 
     def get_retriever(self, retriever_type):
-        if retriever_type in self._classes.keys():
-            return self._classes[retriever_type]()
+        if retriever_type in self._retrievers.keys():
+            return self._retrievers[retriever_type]
         else:
             return None

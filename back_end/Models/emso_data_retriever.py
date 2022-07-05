@@ -1,3 +1,4 @@
+from Models.calculate_service import CalculateService
 import gsw
 import numpy
 
@@ -8,21 +9,32 @@ from Models.dataset import Dataset
 
 class EMSODataRetriever(DataRetrieverBase):
 
-    def __init__(self):
-        self.data_ref = {"58220": "./data/58220.csv"}
+    def __init__(self, logger):
+        self.logger = logger
+        key = "58220"
+        self.datasets = {key: EMSODataRetriever.load_data(key)}
+        self.client = CalculateService(logger)
+        self.logger.info("EMSO data retriever created")
 
-    def get_records(self, reference, args_dict):
-        return self.api_call_to_get_data(reference, args_dict.get('salinity_calculated', False))
+    def get_records(self, reference: str, args_dict: dict):
+        if reference in self.datasets.keys():
+            dataset = self.datasets[reference]
+        if args_dict and args_dict.get("salinity_calculated", False):
+            dataset = self.calculated_salinity(dataset)
+        return dataset
 
-    def api_call_to_get_data(self, reference, salinity_calculated):
-        if reference not in self.data_ref.keys():
-            return None
-        loader = CsvDataSetExtractor(self.data_ref[reference])
+    def calculated_salinity(self, dataset):
+        self.client.check_present()
+        self.logger.info("Present!")
+        return dataset 
+
+    @staticmethod
+    def load_data(reference):
+        filepath = "./data/58220.csv"
+        loader = CsvDataSetExtractor(filepath)
         sensor_info = loader.extract_sensor_info()
         data, units = loader.load_data()
-        if salinity_calculated:
-            return Dataset(dataFrame=self.add_psalinity_column(data), sensor_info=sensor_info, units=units, source=self.data_ref[reference])
-        return Dataset(dataFrame=data, sensor_info=sensor_info, units=units, source=self.data_ref[reference])
+        return Dataset(dataFrame=data, sensor_info=sensor_info, units=units, source=filepath)
 
     @staticmethod
     def add_psalinity_column(dataframe):
