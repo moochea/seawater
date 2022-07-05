@@ -15,7 +15,7 @@ class CalculateService:
         response = jsonify("failed")
         response.status_code = HTTPStatus.BAD_REQUEST
         try:
-            connection = http.client.HTTPConnection(self.base_url, port=self.port)
+            connection = http.client.HTTPConnection(self.base_url, port=self.port, timeout=10)
             connection.request("GET", "/")
             response = connection.getresponse()
             connection.close()
@@ -29,7 +29,7 @@ class CalculateService:
         response = jsonify("failed")
         response.status_code = HTTPStatus.BAD_REQUEST
         try:
-            connection = http.client.HTTPConnection(self.base_url, port=self.port)
+            connection = http.client.HTTPConnection(self.base_url, port=self.port, timeout=30)
             entries = json.dumps(dictionary_list)
             connection.request("POST", "/api/calculations/practical_salinity", entries)
             response = connection.getresponse()
