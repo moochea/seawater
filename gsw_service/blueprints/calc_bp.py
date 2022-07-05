@@ -4,7 +4,6 @@ import gsw as gsw
 import numpy
 import pandas as pandas
 from flask import Blueprint, request, jsonify, json
-# import flask_swagger_ui
 
 
 def construct():
@@ -12,7 +11,6 @@ def construct():
 
     @calc_bp.route('/practical_salinity', methods=('POST',))
     def process_data():
-        print("calculate_psal")
         data=request.data
         data = json.loads(data)
         dataframe = extract_args_to_dataframe(data)
