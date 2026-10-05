@@ -1,5 +1,5 @@
 # Read Me
-This project was created as a take home assignment for a job I applied for in 2022.
+This project was created as a take home assignment for a 2022 job application.
 The application generates a web page with a table of seawater related parameters collected at a certain date, and returns the calculated practical salinity in a separate column for each row of parameters.
 
 ## Minimum requirements
